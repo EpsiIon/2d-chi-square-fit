@@ -36,7 +36,7 @@ X, infodict = integrate.odeint(syst, I0, t, full_output=True)
 print infodict['message']              #integration report
 
 #*******************searching for the best fit******************************
-dk    = 0.1 #step of surfing 
+dk    = 0.5 #step of surfing 
 
 k1min = 0   #range of surfing
 k1max = 5
@@ -95,25 +95,27 @@ R, infodict = integrate.odeint(syst, I0, t, full_output=True)
 x0, y0 = R.T
 
 #lets plot!
-fig = plt.figure(2, figsize=(8,8))
+
+
+fig = plt.figure(1, figsize=(8,8))
 plt.rc('font', size=14)
 
-gs = gridspec.GridSpec(2, 2,width_ratios=[1, 2],height_ratios=[3, 1])
-gs1 = gridspec.GridSpec(2, 2,width_ratios=[1, 2],height_ratios=[1, 1])
+fig = plt.figure(1, figsize=(8,8))
+gs = gridspec.GridSpec(2, 1, height_ratios=[6, 2])
 
 # Top plot: data and fit
-ax2 = fig.add_subplot(gs[1])
-ax2.plot(t, y0)
-ax2.errorbar(t1, s1, yerr=d1, fmt='or', ecolor='black')
-ax2.set_xlabel('Time [s]')
-ax2.set_ylabel('RFU [a.u.]')
+ax1 = fig.add_subplot(gs[0])
+ax1.plot(t, y0)
+ax1.errorbar(t1, s1, yerr=d1, fmt='or', ecolor='black')
+ax1.set_xlabel('Time [s]')
+ax1.set_ylabel('RFU [a.u.]')
 
 # Bottom plot: residuals
-ax4 = fig.add_subplot(gs[3])
-ax4.errorbar(t1, resids, yerr = d1, ecolor="black", fmt="ro")
-ax4.axhline(color="gray", zorder=-1)
-ax4.set_xlabel('RFU [a.u.]')
-ax4.set_ylabel('Residuals')
+ax2 = fig.add_subplot(gs[1])
+ax2.errorbar(t1, resids, yerr = d1, ecolor="black", fmt="ro")
+ax2.axhline(color="gray", zorder=-1)
+ax2.set_xlabel('RFU [a.u.]')
+ax2.set_ylabel('Residuals')
 
 #*******************plotting gradient matrix *************************
 
@@ -130,7 +132,8 @@ for i in np.arange(int((k1max-k1min)/dk)-2):
   for j in np.arange(int((k2max-k2min)/dk)-2):
     dflw1[i,j]=dflw[i+1,j+1]
 
-ax1 = fig.add_subplot(gs1[0])
+fig = plt.figure(2)
+ax1 = fig.add_subplot(1,2,1)
 plt.imshow(np.flipud(dflw1), cmap=plt.cm.Blues,
 	   interpolation='none',extent=[k1min,k1max,k2min,k2max])
 ax1 = plt.gca()
@@ -139,7 +142,7 @@ ax1.set_ylabel('k2 coordinate')
 plt.title('Defferential space $\Delta k$ = 0.1' )
 plt.colorbar()
 
-ax1 = fig.add_subplot(gs1[2])
+ax2 = fig.add_subplot(1,2,2)
 plt.imshow(np.flipud(flw), cmap=plt.cm.Blues,
 	   interpolation='none',extent=[k1min,k1max,k2min,k2max])
 ax2 = plt.gca()
@@ -150,7 +153,7 @@ plt.colorbar()
 
 
 #ZOOM
-dk    = 0.01 #step of surfing 
+dk    = 0.5 #step of surfing 
 
 k1min = 0    #range of surfing
 k1max = 1
@@ -179,7 +182,6 @@ inset_axes = inset_axes(ax2,
                     loc=1)
 plt.imshow(np.flipud(flw), cmap=plt.cm.Blues,
 	   interpolation='none',extent=[k1min,k1max,k2min,k2max])
-plt.title('Zoomed minimum')
 
 
 plt.show()  
